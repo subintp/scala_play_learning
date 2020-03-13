@@ -6,6 +6,7 @@ import javax.inject.Singleton
 
 @Singleton
 class CassandraSession extends CassandraConfig {
+
   lazy val poolingOptions: PoolingOptions = {
     new PoolingOptions()
       .setConnectionsPerHost(HostDistance.LOCAL, 4, 10)
