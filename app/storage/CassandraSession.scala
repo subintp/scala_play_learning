@@ -1,8 +1,10 @@
 package storage
 
-import com.datastax.driver.core.{HostDistance, PoolingOptions}
+import com.datastax.driver.core.{Cluster, HostDistance, PoolingOptions, Session}
 import configurations.CassandraConfig
+import javax.inject.Singleton
 
+@Singleton
 class CassandraSession extends CassandraConfig {
   lazy val poolingOptions: PoolingOptions = {
     new PoolingOptions()
