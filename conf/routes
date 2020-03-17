@@ -8,6 +8,7 @@ GET     /                           controllers.HomeController.index
 
 GET     /tweets                    controllers.TweetController.index
 GET     /tweets/:id                controllers.TweetController.find(id: java.util.UUID)
+POST    /tweets                    controllers.TweetController.create
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
