@@ -18,6 +18,14 @@ class TweetDao @Inject() (session: CassandraSession)  {
 
   lazy val getTweetStatement = session.session.prepare(getTweetQuery)
 
+  lazy val createTweetQuery =
+    """
+      |INSERT INTO twitter.tweets(tweet_id, user_id, content, created_at)
+      |VALUES(?, ?, ?, ?)
+    """.stripMargin
+
+  lazy val createTweetStatement = session.session.prepare(createTweetQuery)
+
   def findAllTweets: Unit = {
     val tweets = session.session.execute("select * from twitter.tweets limit 2").all()
     println("Hello Tweets")
@@ -35,6 +43,21 @@ class TweetDao @Inject() (session: CassandraSession)  {
             row.getString("content")
           )
         )
+    else None
+  }
+
+  def create(tweet: Tweet): Option[Tweet] = {
+    val statement = createTweetStatement.bind(tweet.tweet_id, tweet.user_id, tweet.content, tweet.created_at)
+    val row = session.session.execute(statement).one()
+    if (row != null)
+      Option(
+        Tweet(
+          row.getUUID("user_id"),
+          row.getUUID("tweet_id"),
+          row.getTimestamp("created_at"),
+          row.getString("content")
+        )
+      )
     else None
   }
 }
