@@ -1,9 +1,12 @@
 package dao
 
-import java.util.{ UUID, Date}
+import java.util.{Date, UUID}
+
 import javax.inject.{Inject, Singleton}
 import storage.CassandraSession
 import models.Tweet
+import scala.jdk.CollectionConverters
+
 
 @Singleton
 class TweetDao @Inject() (session: CassandraSession)  {
@@ -26,10 +29,19 @@ class TweetDao @Inject() (session: CassandraSession)  {
 
   lazy val createTweetStatement = session.session.prepare(createTweetQuery)
 
-  def findAllTweets: Unit = {
-    val tweets = session.session.execute("select * from twitter.tweets limit 2").all()
-    println("Hello Tweets")
-    println(tweets)
+  def findAll: Seq[Tweet] = {
+    val rows = session.session.execute("select * from twitter.tweets").all()
+    val tweetRows = CollectionConverters.IterableHasAsScala(rows).asScala.toSeq
+    tweetRows.map(
+      row => {
+        Tweet(
+          row.getUUID("user_id"),
+          row.getUUID("tweet_id"),
+          row.getTimestamp("created_at"),
+          row.getString("content")
+        )
+      }
+    )
   }
 
   def find(tweetId: UUID): Option[Tweet] = {

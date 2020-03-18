@@ -14,7 +14,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TweetController @Inject()(val controllerComponents: ControllerComponents, tweetDao: TweetDao)(implicit ec: ExecutionContext) extends BaseController {
 
   def index() = Action { implicit request: Request[AnyContent] =>
-    Ok(tweetDao.findAllTweets.toString)
+    Ok(Json.toJson(tweetDao.findAll))
   }
 
   def find(id: UUID) = Action.async { implicit request: Request[AnyContent] =>
