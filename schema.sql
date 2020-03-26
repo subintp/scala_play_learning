@@ -7,3 +7,12 @@ CREATE TABLE tweets (
    content text,
    PRIMARY KEY((user_id), tweet_id, created_at)
 );
+
+
+CREATE TABLE users (
+   id UUID,
+   name text,
+   encrpted_password text,
+   created_at timestamp,
+   PRIMARY KEY(id, name)
+);
